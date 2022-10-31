@@ -1,0 +1,17 @@
+name: autobuild-when-commit
+run-name: ${{ github.actor }}: Autobuild (push)
+on: [push]
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run build.sh
+        run: ./build.sh
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: allshaders.tar.gz
+          path: allshaders.tar.gz
+
