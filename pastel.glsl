@@ -99,11 +99,12 @@ vec4 blend(vec4 curr, vec4 col) {
 
 float gridMask(vec2 gridUV, float rand) {
   float mask =
-    rand < 0.2? gridCircleMask(gridUV * 1.34) :
-    rand < 0.4? gridSquareMask(gridUV * 1.2) :
-    rand < 0.6? gridDiamondMask(gridUV * 1.1) :
-    rand < 0.8? gridCrossMask(gridUV * 1.2) :
-    gridPlusMask(gridUV * 1.1);
+    rand < 0.15? gridCircleMask(gridUV * 1.34) :
+    rand < 0.3? gridSquareMask(gridUV * 1.2) :
+    rand < 0.45? gridDiamondMask(gridUV * 1.1) :
+    rand < 0.6? gridCrossMask(gridUV * 1.2) :
+    rand < 0.75? gridPlusMask(gridUV * 1.1) :
+    gridCornerMask(gridUV * 1.27);
   return mask * gridSquareMask(gridUV);
 }
 
