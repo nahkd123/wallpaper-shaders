@@ -11,6 +11,7 @@ uniform vec2 resolution;
 uniform float battery;
 uniform int powerConnected;
 uniform sampler2D backbuffer;
+uniform vec2 offset;
 
 #define PI 3.1415926535898
 #define FULL vec4(0.5, 1.0, 0.5, 1.0)
@@ -25,6 +26,7 @@ float wave(vec2 uv, float flySpeed, float ampSpeed, float ampChange) {
 }
 
 vec4 waves(vec2 uv, float batteryLevel) {
+  uv += offset;
   uv.y -= (batteryLevel * 2.0 - 1.0) * 1.5;
   vec4 col = vec4(0);
   vec4 batColL0 = batteryLevel < 0.5?
