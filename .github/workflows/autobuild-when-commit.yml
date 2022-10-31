@@ -1,5 +1,5 @@
 name: autobuild-when-commit
-run-name: ${{ github.actor }}: Autobuild (push)
+run-name: "${{ github.actor }}: Autobuild (push)"
 on: [push]
 jobs:
   run-script:
