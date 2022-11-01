@@ -1,0 +1,15 @@
+{
+  "name": "@nahkd123/shader-wallpapers",
+  "version": "1.0.0",
+  "description": "Shader wallpapers builder that builds GLSL shaders to PNGs",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "author": "nahkd123",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "glsl-transpiler": "^1.8.5",
+    "pngjs": "^6.0.0"
+  }
+}
