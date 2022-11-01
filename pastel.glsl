@@ -37,19 +37,6 @@ float random(vec2 v) {
   return fract(sin(dot(v.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
-// https://shadertoy.com/view/4dS3Wd
-float noise(vec2 uv) {
-  vec2 i = floor(uv);
-  vec2 f = fract(uv);
-
-  float a = random(i);
-  float b = random(i + vec2(1, 0));
-  float c = random(i + vec2(0, 1));
-  float d = random(i + vec2(1, 1));
-  vec2 u = f * f * (3. - 2. * f);
-  return mix(a, b, u.x) + (c - a) * u.y * (1. - u.x) + (d - b) * u.x * u.y;
-}
-
 float rodMask(vec2 uv, vec2 dir, float radius) {
   float d = dot(uv, vec2(-dir.y, dir.x));
   return d > -radius && d < radius? 1.0 : 0.0;
@@ -108,6 +95,15 @@ float gridMask(vec2 gridUV, float rand) {
   return mask * gridSquareMask(gridUV);
 }
 
+float gridCellRotation(float t) {
+  // 3s duration: 1s rotate, 2s wait
+  float segment = mod(t, 3.0);
+  float p = segment < 1.0? (cos(segment * PI - PI) + 1.0) / 2.0 : 1.0;
+  float rFrom = floor(t / 3.0) * (PI / 2.0);
+  float rTo = rFrom + (PI / 2.0);
+  return rFrom * (1.0 - p) + rTo * p;
+}
+
 vec4 image(vec2 uv) {
   uv += vec2(time / 28.0, -time / 36.0);
 
@@ -115,9 +111,11 @@ vec4 image(vec2 uv) {
   vec2 gridUV = gridInf.xy;
   vec2 gridPos = gridInf.zw;
 
+  gridUV = rotateUV(gridUV, gridCellRotation(time + random(gridPos * vec2(3, 6)) * 7.0));
+
   float rand = random(gridPos);
   float rand2 = random(gridPos + vec2(12, 34));
-  float rand3 = random(gridPos + vec2(-12, 32));
+  float rand3 = random(gridPos / 4.0 + vec2(-12, 32));
   float rotation =
     rand2 < 0.25? 0.0 :
     rand2 < 0.5? (PI / 2.0) :
