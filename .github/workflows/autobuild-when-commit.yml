@@ -7,11 +7,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Run build.sh
-        run: ./build.sh
-      - name: Upload tarball artifact
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install packages for static wallpapers builder
+        working-directory: ./build
+        run: npm install
+      - name: Build static wallpapers
+        run: node build
+      - name: Upload wallpapers as tarball artifact
         uses: actions/upload-artifact@v3
         with:
-          name: allshaders.tar.gz
-          path: allshaders.tar.gz
+          name: Static Wallpapers
+          path: buildresult/*.png
 
