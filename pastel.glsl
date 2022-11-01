@@ -10,6 +10,14 @@ uniform vec3 pointers[10];
 uniform vec2 resolution;
 uniform vec2 offset;
 
+// Shader settings
+#define ROTATE_SEGMENT_TIME 3.0
+#define ROTATE_ANIMATION_TIME 1.2
+#define ROTATE_PHASE_SHIFT_MAX 7.0
+#define GRID_SIZE 0.5
+#define COLOR_FOREGROUND_LIGHTNESS 1.0
+#define COLOR_BACKGROUND_LIGHTNESS 0.78
+
 #define FRAGMENT_SIZE (1. / 7.)
 #define PI 3.1415926535898
 #define RED vec4(1.0, 0.8, 0.8, 1.0)
@@ -97,8 +105,8 @@ float gridMask(vec2 gridUV, float rand) {
 
 float gridCellRotation(float t) {
   // 3s duration: 1s rotate, 2s wait
-  float segment = mod(t, 3.0);
-  float p = segment < 1.0? (cos(segment * PI - PI) + 1.0) / 2.0 : 1.0;
+  float segment = mod(t, ROTATE_SEGMENT_TIME);
+  float p = segment < ROTATE_ANIMATION_TIME? (cos((segment / ROTATE_ANIMATION_TIME) * PI - PI) + 1.0) / 2.0 : 1.0;
   float rFrom = floor(t / 3.0) * (PI / 2.0);
   float rTo = rFrom + (PI / 2.0);
   return rFrom * (1.0 - p) + rTo * p;
@@ -107,11 +115,11 @@ float gridCellRotation(float t) {
 vec4 image(vec2 uv) {
   uv += vec2(time / 28.0, -time / 36.0);
 
-  vec4 gridInf = grid(uv, 0.5);
+  vec4 gridInf = grid(uv, GRID_SIZE);
   vec2 gridUV = gridInf.xy;
   vec2 gridPos = gridInf.zw;
 
-  gridUV = rotateUV(gridUV, gridCellRotation(time + random(gridPos * vec2(3, 6)) * 7.0));
+  gridUV = rotateUV(gridUV, gridCellRotation(time + random(gridPos * vec2(3, 6)) * ROTATE_PHASE_SHIFT_MAX));
 
   float rand = random(gridPos);
   float rand2 = random(gridPos + vec2(12, 34));
@@ -122,8 +130,8 @@ vec4 image(vec2 uv) {
     rand2 < 0.75? PI :
     ((3.0 * PI) / 2.0);
   gridUV = rotateUV(gridUV, rotation);
-  vec4 objCol = pastel(mod(time / 10.0 + rand3, 1.0), 1.0);
-  vec4 objColDark = pastel(mod(time / 10.0 + rand3, 1.0), 0.78);
+  vec4 objCol = pastel(mod(time / 10.0 + rand3, 1.0), COLOR_FOREGROUND_LIGHTNESS);
+  vec4 objColDark = pastel(mod(time / 10.0 + rand3, 1.0), COLOR_BACKGROUND_LIGHTNESS);
 
   vec4 col = objColDark;
   col = blend(col, objCol * gridMask(gridUV, rand));
