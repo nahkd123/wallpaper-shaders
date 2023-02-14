@@ -11,7 +11,8 @@ const compilePass1 = Compiler({
 });
 
 function compileShader(name, glsl, width = 1080, height = 1920) {
-    const code = "var gl_FragColor = [0, 0, 0, 0];\n" + compilePass1(glsl) + "\n\nmain();\nreturn gl_FragColor;";
+    const code = "var gl_FragColor = [0, 0, 0, 0];const PI = " + Math.PI + ";\n" + compilePass1(glsl) + "\n\nmain();\nreturn gl_FragColor;";
+    console.log(code);
     const prog = new Function("gl_FragCoord", "uniforms", code);
     const backbuffer = new pngjs.PNG({ width, height });
     return {
